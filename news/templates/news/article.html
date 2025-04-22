@@ -1,0 +1,31 @@
+{% extends "main/layout.html" %}
+
+{% block content %}
+
+<div class="py-3">
+	<h2>
+		<nav aria-label="breadcrumb">
+			<ol class="breadcrumb">
+				<li class="breadcrumb-item"><a class="text-decoration-none" href="{% url 'news' %}">Новости сайта</a></li>
+				<li class="breadcrumb-item active" aria-current="page">
+					{{ title }}
+					{% if user.is_superuser %}
+					<a href="/admin/news/articles/{{ title.id }}/change"><i class="fas fa-edit"></i></a>
+					{% endif %}
+				</li>
+			</ol>
+		</nav>
+	</h2>
+	{% if title.author %}
+	<p>{{ title.author }} // {{ title.data }}</p><hr />
+	{% else %}
+	<p>Аноним // {{ title.data }}</p><hr />
+	{% endif %}
+	<div class="container">
+		<div class="bs-callout bs-callout-danger">
+			<p>{{ title.text }}</p>
+		</div>
+	</div>
+</div>
+
+{% endblock %}

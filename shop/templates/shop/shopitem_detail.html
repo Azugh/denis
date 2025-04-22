@@ -1,0 +1,43 @@
+{% extends "main/layout.html" %}
+
+{% block content %}
+
+<div class="py-3">
+	<h2>
+		<nav aria-label="breadcrumb">
+			<ol class="breadcrumb">
+				<li class="breadcrumb-item"><a href="{% url 'shop' %}">Каталог</a></li>
+				<li class="breadcrumb-item active" aria-current="page">
+					{{ title }}
+					{% if staff %}
+					<a href="/admin/shop/shopitems/{{ item.id }}/change"><i class="fas fa-edit"></i></a>
+					{% endif %}
+				</li>
+			</ol>
+		</nav>
+	</h2><hr />
+	
+	<div class="container mt-5">
+		<div class="row">
+			<div class="col-md-6">
+				<img src="{{ item.image.url }}" alt="preview" class="img-fluid rounded" id="shopitem-image">
+			</div>
+			<div class="col-md-6">
+				<h2>{{ item.name }}</h2>
+				<p>{{ item.description }}</p>
+				<p>Цена: <span class="text-success">{{ item.price }} ₽</span></p>
+				<form id="add-to-cart-form" action="{% url 'cart_add' item.id %}" method="post" class="form-inline">
+					{% csrf_token %}
+					{% if user.is_authenticated %}
+						<input type="number" name="quantity" value="1" min="1" class="form-control mr-2">
+						<button type="submit" class="btn btn-primary btn-lg mt-4">Добавить в корзину</button>
+					{% endif %}
+				</form>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+
+{% endblock %}

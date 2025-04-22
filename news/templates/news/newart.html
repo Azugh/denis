@@ -1,0 +1,49 @@
+{% extends "main/layout.html" %}
+
+{% block content %}
+
+<div class="py-3">
+	<h2>{{ title }}</h2> <hr />
+
+{% if form != None %}
+<div class="container">
+	<form class="row" method="post" enctype="multipart/form-data">
+		{% csrf_token %}
+		<div class="col-6 m-1">
+			<label for="{{ form.title.name.id_for_label }}">{{ form.title.label }}:</label>
+		</div>
+		<div class="col-6 m-1">
+			<input type="text" class="form-control" id="input_title" name="title">
+		</div>
+		<div class="col-6 m-1">
+			<label for="{{ form.image.name.id_for_label }}">{{ form.image.label }}:</label>
+		</div>
+		<div class="col-6 m-1">
+			<input type="file" class="form-control" id="input_image" name="image">
+		</div>
+		<div class="col-6 m-1">
+			<input type="submit" id="sb" value="Опубликовать" class="btn btn-primary col-12 mt-3">
+		</div>
+	</form>
+</div>
+{% endif %}
+</div>
+
+<script>
+	$('#sb').mouseover(function () {
+        $(this).css('background', 'white');
+		$(this).css('color', 'blue');
+    });
+	$('#sb').mouseout(function () {
+        $(this).css('background', 'blue');
+		$(this).css('color', 'white');
+    });
+	$('#input_title').focus(function () {
+        $(this).css('background', 'aliceblue');
+    });
+	$('#input_title').blur(function () {
+        $(this).css('background', '');
+    });
+</script>
+
+{% endblock %}

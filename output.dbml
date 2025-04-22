@@ -1,0 +1,142 @@
+Table django_migrations {
+  id INTEGER pk
+  app varchar(255)
+  name varchar(255)
+  applied datetime
+}
+Table auth_group_permissions {
+  id INTEGER pk
+  group_id INTEGER
+  permission_id INTEGER
+}
+Table auth_user_groups {
+  id INTEGER pk
+  user_id INTEGER
+  group_id INTEGER
+}
+Table auth_user_user_permissions {
+  id INTEGER pk
+  user_id INTEGER
+  permission_id INTEGER
+}
+Table django_admin_log {
+  id INTEGER pk
+  object_id TEXT
+  object_repr varchar(200)
+  action_flag smallint unsigned
+  change_message TEXT
+  content_type_id INTEGER
+  user_id INTEGER
+  action_time datetime
+}
+Table django_content_type {
+  id INTEGER pk
+  app_label varchar(100)
+  model varchar(100)
+}
+Table auth_permission {
+  id INTEGER pk
+  content_type_id INTEGER
+  codename varchar(100)
+  name varchar(255)
+}
+Table auth_group {
+  id INTEGER pk
+  name varchar(150)
+}
+Table auth_user {
+  id INTEGER pk
+  password varchar(128)
+  last_login datetime
+  is_superuser bool
+  username varchar(150)
+  last_name varchar(150)
+  email varchar(254)
+  is_staff bool
+  is_active bool
+  date_joined datetime
+  first_name varchar(150)
+}
+Table django_session {
+  session_key varchar(40) pk
+  session_data TEXT
+  expire_date datetime
+}
+Table shop_cartitems {
+  id INTEGER pk
+  quantity integer unsigned
+  shopitem_id bigint
+  user_id INTEGER
+}
+Table shop_orderitems {
+  id INTEGER pk
+  quantity integer unsigned
+  fixed_price decimal
+  order_id bigint
+  shopitem_id bigint
+}
+Table shop_categories {
+  id INTEGER pk
+  name varchar(100)
+}
+Table news_articles {
+  id INTEGER pk
+  title varchar(50)
+  description varchar(200)
+  text TEXT
+  author_id INTEGER
+  data datetime
+}
+Table news_comments {
+  id INTEGER pk
+  text TEXT
+  author_id INTEGER
+  post_id bigint
+  data datetime
+}
+Table news_pictures {
+  id INTEGER pk
+  title varchar(50)
+  image varchar(100)
+  author_id INTEGER
+  data datetime
+}
+Table shop_statuses {
+  id INTEGER pk
+  name varchar(50)
+}
+Table shop_shopitems {
+  id INTEGER pk
+  name varchar(50)
+  image varchar(100)
+  description varchar(200)
+  price decimal
+  category_id bigint
+}
+Table shop_orders {
+  id INTEGER pk
+  user_id INTEGER
+  order_date datetime
+  total_price decimal
+  status_id bigint
+}
+Ref: auth_group_permissions.permission_id > auth_permission.id
+Ref: auth_group_permissions.group_id > auth_group.id
+Ref: auth_user_groups.group_id > auth_group.id
+Ref: auth_user_groups.user_id > auth_user.id
+Ref: auth_user_user_permissions.permission_id > auth_permission.id
+Ref: auth_user_user_permissions.user_id > auth_user.id
+Ref: django_admin_log.user_id > auth_user.id
+Ref: django_admin_log.content_type_id > django_content_type.id
+Ref: auth_permission.content_type_id > django_content_type.id
+Ref: shop_cartitems.user_id > auth_user.id
+Ref: shop_cartitems.shopitem_id > shop_shopitems.id
+Ref: shop_orderitems.shopitem_id > shop_shopitems.id
+Ref: shop_orderitems.order_id > shop_orders.id
+Ref: news_articles.author_id > auth_user.id
+Ref: news_comments.post_id > news_pictures.id
+Ref: news_comments.author_id > auth_user.id
+Ref: news_pictures.author_id > auth_user.id
+Ref: shop_shopitems.category_id > shop_categories.id
+Ref: shop_orders.status_id > shop_statuses.id
+Ref: shop_orders.user_id > auth_user.id

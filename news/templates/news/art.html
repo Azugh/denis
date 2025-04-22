@@ -1,0 +1,71 @@
+{% extends "main/layout.html" %}
+
+{% block content %}
+
+<div class="py-3">
+	<h2>
+		<nav aria-label="breadcrumb">
+			<ol class="breadcrumb">
+				<li class="breadcrumb-item"><a href="{% url 'arts' %}">Арты</a></li>
+				<li class="breadcrumb-item active" aria-current="page">
+					{{ title }}
+					{% if user.is_superuser %}
+					<a href="/admin/news/pictures/{{ title.id }}/change"><i class="fas fa-edit"></i></a>
+					{% endif %}
+				</li>
+			</ol>
+		</nav>
+	</h2>
+	<p>{{ title.author }} // {{ title.data }}</p>
+	<hr />
+	<div class="container">
+		<img src="{{ title.image.url }}">
+	</div>
+	<hr />
+	<h2>Комментарии</h2>
+	{% if user.is_authenticated %}
+	<form class="row" method="post">
+		{% csrf_token %}
+		<div class="col-6 m-1">
+			<textarea class="form-control" id="comment_text" name="text" rows="3"></textarea>
+		</div>
+		<div class="col-6 m-1">
+			<input type="submit" id="sb" value="Отправить" class="btn btn-primary col-12 mt-3">
+		</div>
+	</form>
+	{% else %}
+	<p>Для добавления комментария необходимо авторизоваться</p>
+	{% endif %}
+	<hr />
+	{% if comms %}
+	{% for comm in comms %}
+	<div class="p-3 mb-1 bg-body-tertiary">
+		<div class="container-fluid mb-1">
+			<h3>{{ comm.author }} // {{ comm.data }}</h3>
+			<p class="fs-5">{{ comm.text }}</p>
+		</div>
+	</div>
+	{% endfor %}
+	{% else %}
+	<h3>Ещё никто не оставил комментарий 😥</h3>
+	{% endif %}
+</div>
+
+<script>
+	$('#sb').mouseover(function () {
+		$(this).css('background', 'white');
+		$(this).css('color', 'blue');
+	});
+	$('#sb').mouseout(function () {
+		$(this).css('background', 'blue');
+		$(this).css('color', 'white');
+	});
+	$('#comment_text').focus(function () {
+		$(this).css('background', 'aliceblue');
+	});
+	$('#comment_text').blur(function () {
+		$(this).css('background', '');
+	});
+</script>
+
+{% endblock %}

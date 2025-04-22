@@ -1,0 +1,34 @@
+{% extends "main/layout.html" %}
+
+{% block content %}
+
+<div class="py-3">
+	<h2>
+		{{ title }}
+		{% if user.is_authenticated %}
+		<a href="{% url 'newart' %}"><i class="fas fa-plus"></i></a>
+		{% endif %}
+		{% if user.is_superuser %}
+		<a href="/admin/news/pictures/add"><i class="fas fa-unlock"></i></a>
+		{% endif %}
+	</h2> <hr />
+
+	<div class="container">
+		<div class="card-columns">
+			{% if artslist %}
+				{% for art in artslist %}
+				<div class="card">
+					<a href="{% url 'art' n=art.id %}">
+						<img class="card-img-top" src="{{ art.image.url }}" alt="art.title" >
+					</a>
+				</div>
+				{% endfor %}
+			{% else %}
+				<p>Здесь ничего нет...</p>
+			{% endif %}
+		</div>
+	</div>
+
+</div>
+
+{% endblock %}

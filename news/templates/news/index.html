@@ -1,0 +1,32 @@
+{% extends "main/layout.html" %}
+
+{% block content %}
+
+<div class="py-3">
+	<h2>
+		{{ title }}
+		{% if user.is_superuser %}
+		<a href="/admin/news/articles/add"><i class="fas fa-plus"></i></a>
+		{% endif %}
+	</h2> <hr />
+	
+	<div class="container">
+		{% if newslist %}
+		{% for article in newslist %}
+		<div class="p-3 mb-2 bg-body-tertiary">
+			<div class="container-fluid">
+				<h3><a class="text-decoration-none" href="{% url 'article' n=article.id %}">
+					{{ article.data|date:'d.m.Y' }} - {{ article.title }}
+				</a></h3>
+				<p class="fs-5">{{ article.description }}</p>
+			</div>
+		</div>
+		{% endfor %}
+		{% else %}
+		<p>Здесь ничего нет...</p>
+		{% endif %}
+	</div>
+</div>
+
+
+{% endblock %}

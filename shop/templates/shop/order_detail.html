@@ -1,0 +1,45 @@
+{% extends "main/layout.html" %}
+{% load mathfilters %}
+
+{% block content %}
+
+<div class="py-3">
+	<h2>
+		<a class="text-decoration-none" href="{% url 'history' %}">История заказов</a> / 
+		{{ title }}
+		{% if staff %}
+			<a href="/admin/shop/orders/{{ order.id }}/change"><i class="fas fa-edit"></i></a>
+		{% endif %}
+	</h2>
+	<p>Заказ №{{ order.id }} // Статус: {{ order.status }}</p>
+	<hr />
+	
+	<div class="container">
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Товар</th>
+					<th>Количество</th>
+					<th>Цена за единицу</th>
+					<th>Общая цена</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for item in order_items %}
+				<tr>
+					<td>{{ item.shopitem.name }}</td>
+					<td>{{ item.quantity }}</td>
+					<td>{{ item.fixed_price }} руб.</td>
+					<td>{{ item.fixed_price|mul:item.quantity }} руб.</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		<div class="text-right">
+			<h4>Итого: {{ order.total_price }} руб.</h4>
+		</div>
+	</div>
+</div>
+
+
+{% endblock %}
