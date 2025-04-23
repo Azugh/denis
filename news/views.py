@@ -34,21 +34,45 @@ def arts(request):
     return render(
         request, 'news/arts.html',
         {
-            'title':'Арты',
+            'title':'Лента',
             'artslist':pictures.objects.all(),
             'year':datetime.now().year,
         }
     )
 
 def feedback(request):
+    """Renders the about page."""
+    assert isinstance(request, HttpRequest)
+    data = None
+    gender = {'1': 'Мужчина', '2':'Женщина'}
+    internet = {'1': 'Ежедневно' , '2': 'Пару часов в день', '3': 'Пару часов в неделю', '4': 'Пару часов в месяц'}
+
     if request.method == 'POST':
         form = ReviewForm(request.POST)
         if form.is_valid():
-            form.save()  # Сохранение данных в базе данных
-            return redirect('feedback_success')  # Перенаправление на страницу успеха
+            data = dict()
+            data['name'] = form.cleaned_data['name']
+            data['city'] = form.cleaned_data['city']
+            data['job'] = form.cleaned_data['job']
+            data['gender'] = gender[ form.cleaned_data['gender'] ]
+            data['internet'] = internet[ form.cleaned_data['internet'] ]
+            if(form.cleaned_data['notice'] == True):
+                data['notice'] = 'Да'
+            else:
+                data['notice'] = 'Нет'
+            data['email'] = form.cleaned_data['email']
+            data['message'] = form.cleaned_data['message']
+            form = None
     else:
         form = ReviewForm()
-    return render(request, 'news/feedback.html', {'form': form})
+    return render(
+        request,
+        'news/feedback.html',
+        {
+            'form': form,
+            'data': data,
+            'year':datetime.now().year},
+        )
 
 def feedback_success(request):
     return render(request, 'news/feedback_success.html')
