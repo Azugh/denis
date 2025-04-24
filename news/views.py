@@ -2,23 +2,38 @@ from datetime import datetime
 from django.shortcuts import render, redirect
 from django.http import HttpRequest
 from .models import articles, pictures, comments
-from .forms import PictureForm, CommentForm, ReviewForm
+from .forms import PictureForm, CommentForm, ReviewForm, ArticleForm
+from django.contrib import messages
 
 def redir(request):
     assert isinstance(request, HttpRequest)
     return redirect('news')
 
+def add_article(request):
+    if request.method == 'POST':
+        form = ArticleForm(request.POST)
+        if form.is_valid():
+            article = form.save(commit=False)
+            article.author = request.user
+            article.save()
+            messages.success(request, 'Новость успешно добавлена!')
+            return redirect('news')
+    else:
+        form = ArticleForm()
+    
+    return render(request, 'news/add_article.html', {'form': form})
+
 def news(request):
-    assert isinstance(request, HttpRequest)
+
     return render(
-        request, 'news/index.html',
+        request,
+        'news/index.html',
         {
-            'title':'Новости сайта',
-            'newslist':articles.objects.all(),
-            'year':datetime.now().year,
+            'title': 'Новости сайта',
+            'newslist': articles.objects.all(),
+            'year': datetime.now().year,
         }
     )
-    
 def article(request, n):
     assert isinstance(request, HttpRequest)
     return render(

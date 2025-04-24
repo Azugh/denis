@@ -1,5 +1,15 @@
 from django import forms
-from .models import pictures, comments, Feedback
+from .models import pictures, comments, Feedback, articles
+
+class ArticleForm(forms.ModelForm):
+    class Meta:
+        model = articles
+        fields = ['title', 'description', 'text']
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.TextInput(attrs={'class': 'form-control'}),
+            'text': forms.Textarea(attrs={'class': 'form-control', 'rows': 5}),
+        }
 
 class PictureForm(forms.ModelForm):
     class Meta:
