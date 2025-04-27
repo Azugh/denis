@@ -2,6 +2,7 @@ from datetime import datetime
 from django.shortcuts import render, redirect
 from django.http import HttpRequest
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login
 from news.models import articles
 
 def home(request):
@@ -24,27 +25,31 @@ def contact(request):
             'year':datetime.now().year,
         }
     )
-    
-def signup(request):
-    if request.method == 'POST':
+
+
+def registration(request):
+    """Renders the registration page."""
+    assert isinstance(request, HttpRequest)
+
+    if request.method == "POST":
         regform = UserCreationForm(request.POST)
         if regform.is_valid():
-            reg_f = regform.save(commit=False)
-            reg_f.is_staff = False
-            reg_f.is_active = True
-            reg_f.is_superuser = False
-            reg_f.date_joined = datetime.now()
-            reg_f.last_login = datetime.now()
-            regform.save()
+            user = regform.save(commit=False)
+            user.is_staff = False
+            user.is_active = True
+            user.is_superuser = False
+            user.date_joined = datetime.now()
+            user.save()
+            
+            # Автоматический вход после регистрации
+            login(request, user)
             return redirect('home')
     else:
         regform = UserCreationForm()
-    assert isinstance(request, HttpRequest)
-    return render(
-        request, 'main/signup.html',
-        {
-            'regform': regform,
-            'title':'Регистрация',
-            'year':datetime.now().year,
-        }
-    )
+
+    # Отображаем форму с ошибками, если они есть
+    return render(request, 'main/signup.html', {
+        'regform': regform,
+        'title': 'Регистрация',
+        'year': datetime.now().year,
+    })

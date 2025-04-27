@@ -1,3 +1,5 @@
+# Функции обработчики
+
 from datetime import datetime
 from django.shortcuts import render, redirect
 from django.http import HttpRequest
@@ -5,12 +7,14 @@ from .models import articles, pictures, comments
 from .forms import PictureForm, CommentForm, ReviewForm, ArticleForm
 from django.contrib import messages
 
-def redir(request):
+def redir(request): 
+    # перенаправляет с главной страницы (/) на список новостей.
     assert isinstance(request, HttpRequest)
     return redirect('news')
 
 def add_article(request):
-    if request.method == 'POST':
+    # Добавить статью
+    if request.method == 'POST': # если POST запрос проверяет ее и записывает в БД
         form = ArticleForm(request.POST)
         if form.is_valid():
             article = form.save(commit=False)
@@ -18,13 +22,13 @@ def add_article(request):
             article.save()
             messages.success(request, 'Новость успешно добавлена!')
             return redirect('news')
-    else:
+    else: # показывает пустую форму
         form = ArticleForm()
     
-    return render(request, 'news/add_article.html', {'form': form})
+    return render(request, 'news/add_article.html', {'form': form})  # render генерирует html страницу
 
 def news(request):
-
+    # показывает список всех новостей. Берет данные из модели articles и передает в шаблон news/index.html
     return render(
         request,
         'news/index.html',
@@ -34,7 +38,9 @@ def news(request):
             'year': datetime.now().year,
         }
     )
-def article(request, n):
+
+def article(request, n): 
+    # показывает одну статью по её ID
     assert isinstance(request, HttpRequest)
     return render(
         request, 'news/article.html',
@@ -45,6 +51,7 @@ def article(request, n):
     )
     
 def arts(request):
+    # показать ленту
     assert isinstance(request, HttpRequest)
     return render(
         request, 'news/arts.html',
@@ -56,6 +63,7 @@ def arts(request):
     )
 
 def feedback(request):
+    # показать страницу обратной статьи
     """Renders the about page."""
     assert isinstance(request, HttpRequest)
     data = None
@@ -93,6 +101,7 @@ def feedback_success(request):
     return render(request, 'news/feedback_success.html')
 
 def art(request, n):
+    # показать выбранный арт
     artn = pictures.objects.get(id = n)
     comms = comments.objects.filter(post = n)
     if request.method == "POST":
@@ -118,6 +127,7 @@ def art(request, n):
     )
 
 def newart(request):
+    # Добавить арт
     if not request.user.is_authenticated:
         return redirect('login')
     if request.method == "POST":
